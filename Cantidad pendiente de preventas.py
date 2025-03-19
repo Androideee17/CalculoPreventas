@@ -83,7 +83,8 @@ def obtener_constante_producto(product_id):
 def obtener_tarifa_local(
     peso_kg,
     estado,
-    archivo_csv=r"C:\Users\IA-FA\OneDrive\Desktop\Cobro preventas\envios_pendientes - Hoja 1.csv"
+    archivo_csv = "envios_pendientes - Hoja 1.csv"
+
 ):
     """
     Retorna (tarifa, paqueteria) según un archivo CSV local.
