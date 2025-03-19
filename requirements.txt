@@ -2,4 +2,4 @@ flask
 requests
 pandas
 python-dotenv
-unicodedata
+
