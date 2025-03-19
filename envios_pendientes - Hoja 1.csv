@@ -1,0 +1,465 @@
+peso_kg,ubicacion,paqueteria,tarifa
+1,Aguascalientes,DHL,140
+2,Aguascalientes,DHL,150
+3,Aguascalientes,DHL,160
+4,Aguascalientes,DHL,180
+5,Aguascalientes,DHL,200
+1,Aguascalientes,Estafeta,130
+2,Aguascalientes,Estafeta,140
+3,Aguascalientes,Estafeta,150
+4,Aguascalientes,Estafeta,170
+5,Aguascalientes,Estafeta,190
+1,Aguascalientes,Teiker,135
+2,Aguascalientes,Teiker,145
+3,Aguascalientes,Teiker,155
+4,Aguascalientes,Teiker,175
+5,Aguascalientes,Teiker,195
+1,Ciudad de México,DHL,140
+2,Ciudad de México,DHL,150
+3,Ciudad de México,DHL,160
+4,Ciudad de México,DHL,180
+5,Ciudad de México,DHL,200
+1,Ciudad de México,Estafeta,130
+2,Ciudad de México,Estafeta,140
+3,Ciudad de México,Estafeta,150
+4,Ciudad de México,Estafeta,170
+5,Ciudad de México,Estafeta,190
+1,Ciudad de México,Teiker,135
+2,Ciudad de México,Teiker,145
+3,Ciudad de México,Teiker,155
+4,Ciudad de México,Teiker,175
+5,Ciudad de México,Teiker,195
+1,Coahuila de Zaragoza,DHL,140
+2,Coahuila de Zaragoza,DHL,150
+3,Coahuila de Zaragoza,DHL,160
+4,Coahuila de Zaragoza,DHL,180
+5,Coahuila de Zaragoza,DHL,200
+1,Coahuila de Zaragoza,Estafeta,130
+2,Coahuila de Zaragoza,Estafeta,140
+3,Coahuila de Zaragoza,Estafeta,150
+4,Coahuila de Zaragoza,Estafeta,170
+5,Coahuila de Zaragoza,Estafeta,190
+1,Coahuila de Zaragoza,Teiker,135
+2,Coahuila de Zaragoza,Teiker,145
+3,Coahuila de Zaragoza,Teiker,155
+4,Coahuila de Zaragoza,Teiker,175
+5,Coahuila de Zaragoza,Teiker,195
+1,Durango,DHL,140
+2,Durango,DHL,150
+3,Durango,DHL,160
+4,Durango,DHL,180
+5,Durango,DHL,200
+1,Durango,Estafeta,130
+2,Durango,Estafeta,140
+3,Durango,Estafeta,150
+4,Durango,Estafeta,170
+5,Durango,Estafeta,190
+1,Durango,Teiker,135
+2,Durango,Teiker,145
+3,Durango,Teiker,155
+4,Durango,Teiker,175
+5,Durango,Teiker,195
+1,Guanajuato,DHL,140
+2,Guanajuato,DHL,150
+3,Guanajuato,DHL,160
+4,Guanajuato,DHL,180
+5,Guanajuato,DHL,200
+1,Guanajuato,Estafeta,130
+2,Guanajuato,Estafeta,140
+3,Guanajuato,Estafeta,150
+4,Guanajuato,Estafeta,170
+5,Guanajuato,Estafeta,190
+1,Guanajuato,Teiker,135
+2,Guanajuato,Teiker,145
+3,Guanajuato,Teiker,155
+4,Guanajuato,Teiker,175
+5,Guanajuato,Teiker,195
+1,Estado de Hidalgo,DHL,140
+2,Estado de Hidalgo,DHL,150
+3,Estado de Hidalgo,DHL,160
+4,Estado de Hidalgo,DHL,180
+5,Estado de Hidalgo,DHL,200
+1,Estado de Hidalgo,Estafeta,130
+2,Estado de Hidalgo,Estafeta,140
+3,Estado de Hidalgo,Estafeta,150
+4,Estado de Hidalgo,Estafeta,170
+5,Estado de Hidalgo,Estafeta,190
+1,Estado de Hidalgo,Teiker,135
+2,Estado de Hidalgo,Teiker,145
+3,Estado de Hidalgo,Teiker,155
+4,Estado de Hidalgo,Teiker,175
+5,Estado de Hidalgo,Teiker,195
+1,Estado de México,DHL,140
+2,Estado de México,DHL,150
+3,Estado de México,DHL,160
+4,Estado de México,DHL,180
+5,Estado de México,DHL,200
+1,Estado de México,Estafeta,130
+2,Estado de México,Estafeta,140
+3,Estado de México,Estafeta,150
+4,Estado de México,Estafeta,170
+5,Estado de México,Estafeta,190
+1,Estado de México,Teiker,135
+2,Estado de México,Teiker,145
+3,Estado de México,Teiker,155
+4,Estado de México,Teiker,175
+5,Estado de México,Teiker,195
+1,Michoacán,DHL,140
+2,Michoacán,DHL,150
+3,Michoacán,DHL,160
+4,Michoacán,DHL,180
+5,Michoacán,DHL,200
+1,Michoacán,Estafeta,130
+2,Michoacán,Estafeta,140
+3,Michoacán,Estafeta,150
+4,Michoacán,Estafeta,170
+5,Michoacán,Estafeta,190
+1,Michoacán,Teiker,135
+2,Michoacán,Teiker,145
+3,Michoacán,Teiker,155
+4,Michoacán,Teiker,175
+5,Michoacán,Teiker,195
+1,Morelos,DHL,140
+2,Morelos,DHL,150
+3,Morelos,DHL,160
+4,Morelos,DHL,180
+5,Morelos,DHL,200
+1,Morelos,Estafeta,130
+2,Morelos,Estafeta,140
+3,Morelos,Estafeta,150
+4,Morelos,Estafeta,170
+5,Morelos,Estafeta,190
+1,Morelos,Teiker,135
+2,Morelos,Teiker,145
+3,Morelos,Teiker,155
+4,Morelos,Teiker,175
+5,Morelos,Teiker,195
+1,Puebla,DHL,140
+2,Puebla,DHL,150
+3,Puebla,DHL,160
+4,Puebla,DHL,180
+5,Puebla,DHL,200
+1,Puebla,Estafeta,130
+2,Puebla,Estafeta,140
+3,Puebla,Estafeta,150
+4,Puebla,Estafeta,170
+5,Puebla,Estafeta,190
+1,Puebla,Teiker,135
+2,Puebla,Teiker,145
+3,Puebla,Teiker,155
+4,Puebla,Teiker,175
+5,Puebla,Teiker,195
+1,Querétaro,DHL,140
+2,Querétaro,DHL,150
+3,Querétaro,DHL,160
+4,Querétaro,DHL,180
+5,Querétaro,DHL,200
+1,Querétaro,Estafeta,130
+2,Querétaro,Estafeta,140
+3,Querétaro,Estafeta,150
+4,Querétaro,Estafeta,170
+5,Querétaro,Estafeta,190
+1,Querétaro,Teiker,135
+2,Querétaro,Teiker,145
+3,Querétaro,Teiker,155
+4,Querétaro,Teiker,175
+5,Querétaro,Teiker,195
+1,San Luis Potosí,DHL,140
+2,San Luis Potosí,DHL,150
+3,San Luis Potosí,DHL,160
+4,San Luis Potosí,DHL,180
+5,San Luis Potosí,DHL,200
+1,San Luis Potosí,Estafeta,130
+2,San Luis Potosí,Estafeta,140
+3,San Luis Potosí,Estafeta,150
+4,San Luis Potosí,Estafeta,170
+5,San Luis Potosí,Estafeta,190
+1,San Luis Potosí,Teiker,135
+2,San Luis Potosí,Teiker,145
+3,San Luis Potosí,Teiker,155
+4,San Luis Potosí,Teiker,175
+5,San Luis Potosí,Teiker,195
+1,Tlaxcala,DHL,140
+2,Tlaxcala,DHL,150
+3,Tlaxcala,DHL,160
+4,Tlaxcala,DHL,180
+5,Tlaxcala,DHL,200
+1,Tlaxcala,Estafeta,130
+2,Tlaxcala,Estafeta,140
+3,Tlaxcala,Estafeta,150
+4,Tlaxcala,Estafeta,170
+5,Tlaxcala,Estafeta,190
+1,Tlaxcala,Teiker,135
+2,Tlaxcala,Teiker,145
+3,Tlaxcala,Teiker,155
+4,Tlaxcala,Teiker,175
+5,Tlaxcala,Teiker,195
+1,Zacatecas,DHL,140
+2,Zacatecas,DHL,150
+3,Zacatecas,DHL,160
+4,Zacatecas,DHL,180
+5,Zacatecas,DHL,200
+1,Zacatecas,Estafeta,130
+2,Zacatecas,Estafeta,140
+3,Zacatecas,Estafeta,150
+4,Zacatecas,Estafeta,170
+5,Zacatecas,Estafeta,190
+1,Zacatecas,Teiker,135
+2,Zacatecas,Teiker,145
+3,Zacatecas,Teiker,155
+4,Zacatecas,Teiker,175
+5,Zacatecas,Teiker,195
+1,Chihuahua,DHL,145
+2,Chihuahua,DHL,160
+3,Chihuahua,DHL,165
+4,Chihuahua,DHL,180
+5,Chihuahua,DHL,200
+1,Chihuahua,Estafeta,140
+2,Chihuahua,Estafeta,155
+3,Chihuahua,Estafeta,160
+4,Chihuahua,Estafeta,175
+5,Chihuahua,Estafeta,195
+1,Chihuahua,Teiker,142
+2,Chihuahua,Teiker,157
+3,Chihuahua,Teiker,162
+4,Chihuahua,Teiker,177
+5,Chihuahua,Teiker,197
+1,Colima,DHL,145
+2,Colima,DHL,160
+3,Colima,DHL,165
+4,Colima,DHL,180
+5,Colima,DHL,200
+1,Colima,Estafeta,140
+2,Colima,Estafeta,155
+3,Colima,Estafeta,160
+4,Colima,Estafeta,175
+5,Colima,Estafeta,195
+1,Colima,Teiker,142
+2,Colima,Teiker,157
+3,Colima,Teiker,162
+4,Colima,Teiker,177
+5,Colima,Teiker,197
+1,Jalisco,DHL,145
+2,Jalisco,DHL,160
+3,Jalisco,DHL,165
+4,Jalisco,DHL,180
+5,Jalisco,DHL,200
+1,Jalisco,Estafeta,140
+2,Jalisco,Estafeta,155
+3,Jalisco,Estafeta,160
+4,Jalisco,Estafeta,175
+5,Jalisco,Estafeta,195
+1,Jalisco,Teiker,142
+2,Jalisco,Teiker,157
+3,Jalisco,Teiker,162
+4,Jalisco,Teiker,177
+5,Jalisco,Teiker,197
+1,Nayarit,DHL,145
+2,Nayarit,DHL,160
+3,Nayarit,DHL,165
+4,Nayarit,DHL,180
+5,Nayarit,DHL,200
+1,Nayarit,Estafeta,140
+2,Nayarit,Estafeta,155
+3,Nayarit,Estafeta,160
+4,Nayarit,Estafeta,175
+5,Nayarit,Estafeta,195
+1,Nayarit,Teiker,142
+2,Nayarit,Teiker,157
+3,Nayarit,Teiker,162
+4,Nayarit,Teiker,177
+5,Nayarit,Teiker,197
+1,Tamaulipas,DHL,145
+2,Tamaulipas,DHL,160
+3,Tamaulipas,DHL,165
+4,Tamaulipas,DHL,180
+5,Tamaulipas,DHL,200
+1,Tamaulipas,Estafeta,140
+2,Tamaulipas,Estafeta,155
+3,Tamaulipas,Estafeta,160
+4,Tamaulipas,Estafeta,175
+5,Tamaulipas,Estafeta,195
+1,Tamaulipas,Teiker,142
+2,Tamaulipas,Teiker,157
+3,Tamaulipas,Teiker,162
+4,Tamaulipas,Teiker,177
+5,Tamaulipas,Teiker,197
+1,Baja California,DHL,165
+2,Baja California,DHL,180
+3,Baja California,DHL,190
+4,Baja California,DHL,210
+5,Baja California,DHL,230
+1,Baja California,Estafeta,160
+2,Baja California,Estafeta,175
+3,Baja California,Estafeta,185
+4,Baja California,Estafeta,205
+5,Baja California,Estafeta,225
+1,Baja California,Teiker,162
+2,Baja California,Teiker,177
+3,Baja California,Teiker,187
+4,Baja California,Teiker,207
+5,Baja California,Teiker,227
+1,Estado de Guerrero,DHL,165
+2,Estado de Guerrero,DHL,180
+3,Estado de Guerrero,DHL,190
+4,Estado de Guerrero,DHL,210
+5,Estado de Guerrero,DHL,230
+1,Estado de Guerrero,Estafeta,160
+2,Estado de Guerrero,Estafeta,175
+3,Estado de Guerrero,Estafeta,185
+4,Estado de Guerrero,Estafeta,205
+5,Estado de Guerrero,Estafeta,225
+1,Estado de Guerrero,Teiker,162
+2,Estado de Guerrero,Teiker,177
+3,Estado de Guerrero,Teiker,187
+4,Estado de Guerrero,Teiker,207
+5,Estado de Guerrero,Teiker,227
+1,Sinaloa,DHL,165
+2,Sinaloa,DHL,180
+3,Sinaloa,DHL,190
+4,Sinaloa,DHL,210
+5,Sinaloa,DHL,230
+1,Sinaloa,Estafeta,160
+2,Sinaloa,Estafeta,175
+3,Sinaloa,Estafeta,185
+4,Sinaloa,Estafeta,205
+5,Sinaloa,Estafeta,225
+1,Sinaloa,Teiker,162
+2,Sinaloa,Teiker,177
+3,Sinaloa,Teiker,187
+4,Sinaloa,Teiker,207
+5,Sinaloa,Teiker,227
+1,Campeche,DHL,170
+2,Campeche,DHL,190
+3,Campeche,DHL,210
+4,Campeche,DHL,230
+5,Campeche,DHL,250
+1,Campeche,Estafeta,165
+2,Campeche,Estafeta,185
+3,Campeche,Estafeta,205
+4,Campeche,Estafeta,225
+5,Campeche,Estafeta,245
+1,Campeche,Teiker,168
+2,Campeche,Teiker,188
+3,Campeche,Teiker,208
+4,Campeche,Teiker,228
+5,Campeche,Teiker,248
+1,Chiapas,DHL,170
+2,Chiapas,DHL,190
+3,Chiapas,DHL,210
+4,Chiapas,DHL,230
+5,Chiapas,DHL,250
+1,Chiapas,Estafeta,165
+2,Chiapas,Estafeta,185
+3,Chiapas,Estafeta,205
+4,Chiapas,Estafeta,225
+5,Chiapas,Estafeta,245
+1,Chiapas,Teiker,168
+2,Chiapas,Teiker,188
+3,Chiapas,Teiker,208
+4,Chiapas,Teiker,228
+5,Chiapas,Teiker,248
+1,Oaxaca,DHL,170
+2,Oaxaca,DHL,190
+3,Oaxaca,DHL,210
+4,Oaxaca,DHL,230
+5,Oaxaca,DHL,250
+1,Oaxaca,Estafeta,165
+2,Oaxaca,Estafeta,185
+3,Oaxaca,Estafeta,205
+4,Oaxaca,Estafeta,225
+5,Oaxaca,Estafeta,245
+1,Oaxaca,Teiker,168
+2,Oaxaca,Teiker,188
+3,Oaxaca,Teiker,208
+4,Oaxaca,Teiker,228
+5,Oaxaca,Teiker,248
+1,Sonora,DHL,170
+2,Sonora,DHL,190
+3,Sonora,DHL,210
+4,Sonora,DHL,230
+5,Sonora,DHL,250
+1,Sonora,Estafeta,165
+2,Sonora,Estafeta,185
+3,Sonora,Estafeta,205
+4,Sonora,Estafeta,225
+5,Sonora,Estafeta,245
+1,Sonora,Teiker,168
+2,Sonora,Teiker,188
+3,Sonora,Teiker,208
+4,Sonora,Teiker,228
+5,Sonora,Teiker,248
+1,Tabasco,DHL,170
+2,Tabasco,DHL,190
+3,Tabasco,DHL,210
+4,Tabasco,DHL,230
+5,Tabasco,DHL,250
+1,Tabasco,Estafeta,165
+2,Tabasco,Estafeta,185
+3,Tabasco,Estafeta,205
+4,Tabasco,Estafeta,225
+5,Tabasco,Estafeta,245
+1,Tabasco,Teiker,168
+2,Tabasco,Teiker,188
+3,Tabasco,Teiker,208
+4,Tabasco,Teiker,228
+5,Tabasco,Teiker,248
+1,Veracruz,DHL,170
+2,Veracruz,DHL,190
+3,Veracruz,DHL,210
+4,Veracruz,DHL,230
+5,Veracruz,DHL,250
+1,Veracruz,Estafeta,165
+2,Veracruz,Estafeta,185
+3,Veracruz,Estafeta,205
+4,Veracruz,Estafeta,225
+5,Veracruz,Estafeta,245
+1,Veracruz,Teiker,168
+2,Veracruz,Teiker,188
+3,Veracruz,Teiker,208
+4,Veracruz,Teiker,228
+5,Veracruz,Teiker,248
+1,Baja California Sur,DHL ,180
+2,Baja California Sur,DHL,220
+3,Baja California Sur,DHL,280
+4,Baja California Sur,DHL,280
+7,Baja California Sur,DHL,280
+8,Baja California Sur,DHL,310
+9,Baja California Sur,DHL,350
+10,Baja California Sur,DHL,380
+15,Baja California Sur,DHL,450
+20,Baja California Sur,DHL,700
+30,Baja California Sur,DHL,1200
+5,Baja California Sur,Estafeta ,145
+7,Baja California Sur,Estafeta ,175
+9,Baja California Sur,Estafeta ,230
+5,Nuevo León,Teiker,75
+10,Nuevo León,Teiker,110
+1,Quintana Roo,DHL,180
+2,Quintana Roo,DHL,220
+3,Quintana Roo,DHL,280
+4,Quintana Roo,DHL,280
+7,Quintana Roo,DHL,280
+8,Quintana Roo,DHL,310
+9,Quintana Roo,DHL,350
+10,Quintana Roo,DHL,380
+15,Quintana Roo,DHL,450
+20,Quintana Roo,DHL,700
+30,Quintana Roo,DHL,1200
+5,Quintana Roo,Estafeta ,145
+7,Quintana Roo,Estafeta ,175
+9,Quintana Roo,Estafeta ,230
+1,Yucatán,DHL,180
+2,Yucatán,DHL,220
+3,Yucatán,DHL,280
+4,Yucatán,DHL,280
+7,Yucatán,DHL,280
+8,Yucatán,DHL,310
+9,Yucatán,DHL,350
+10,Yucatán,DHL,380
+15,Yucatán,DHL,450
+20,Yucatán,DHL,700
+30,Yucatán,DHL,1200
+5,Yucatán,Estafeta ,145
+7,Yucatán,Estafeta ,175
+9,Yucatán,Estafeta ,230
