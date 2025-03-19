@@ -361,7 +361,6 @@ def actualizar_pedido_manual(order_id):
 ###############################################################################
 # 4. EJECUCIÓN DE LA APLICACIÓN FLASK
 ###############################################################################
-
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)), debug=True)
 
