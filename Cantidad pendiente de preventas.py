@@ -16,7 +16,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-SHOPIFY_URL = os.getenv("SHOPIFY_URL")            
+SHOPIFY_URL = os.getenv("SHOPIFY_URL")
 SHOPIFY_API_TOKEN = os.getenv("SHOPIFY_API_TOKEN")
 
 ###############################################################################
@@ -84,7 +84,6 @@ def obtener_tarifa_local(
     peso_kg,
     estado,
     archivo_csv = "envios_pendientes - Hoja 1.csv"
-
 ):
     """
     Retorna (tarifa, paqueteria) según un archivo CSV local.
@@ -103,7 +102,6 @@ def obtener_tarifa_local(
     estado_normalizado = normalizar_cadena(estado)
 
     # Filtramos las filas donde 'ubicacion_normalizada' contenga el texto del estado_normalizado
-    # Esto maneja "Estado de Guerrero" vs "guerrero", con acentos, etc.
     df_match = df[df["ubicacion_normalizada"].str.contains(estado_normalizado, na=False)]
 
     if df_match.empty:
@@ -115,7 +113,7 @@ def obtener_tarifa_local(
     if not df_aplicable.empty:
         row = df_aplicable.iloc[0]
         tarifa = float(row["tarifa"])
-        paqueteria = str(row["paqueteria"])  
+        paqueteria = str(row["paqueteria"])
         logging.info(
             f"Para peso {peso_kg}kg y estado '{estado}' (normalizado='{estado_normalizado}'), "
             f"tarifa={tarifa}, paqueteria={paqueteria}"
@@ -135,6 +133,7 @@ def guardar_metafield_pedido_money(order_id, key, value):
     Valor se envía como JSON: {"amount": "X.YY", "currency_code": "MXN"}
     """
     currency_code = "MXN"
+    from decimal import Decimal
     valor_str = f"{Decimal(value):.2f}"
     value_json_str = json.dumps({"amount": valor_str, "currency_code": currency_code})
 
@@ -221,7 +220,9 @@ def webhook_order_created():
     shipping_lines = order.get("shipping_lines", [])
     shipping_address = order.get("shipping_address", {})
 
+    # -------------------------------
     # 1. Calcular 'cantidad_pendiente_productos'
+    # -------------------------------
     cantidad_pendiente_productos = 0.0
     for item in line_items:
         product_id = item["product_id"]
@@ -244,32 +245,46 @@ def webhook_order_created():
                 f"Pedido {order_id}: Producto {product_id} (qty {quantity}) suma {subtotal} a cantidad pendiente"
             )
 
-    # 2. Calcular 'envio_pendiente' y 'paqueteria' si es "Preventa"
+    # -------------------------------
+    # 2. Determinar si incluye "preventa"
+    #    y calcular "envio_pendiente" y "paqueteria"
+    # -------------------------------
     envio_pendiente = 0.0
     paqueteria = ""
-    if shipping_lines:
-        metodo_envio = shipping_lines[0].get("title", "")
-        if metodo_envio == "Preventa":
-            peso_total_kg = float(order.get("total_weight", 0)) / 1000.0
-            estado = shipping_address.get("province", "") or ""
-            envio_pendiente, paqueteria = obtener_tarifa_local(peso_total_kg, estado)
-        else:
-            logging.info(
-                f"Pedido {order_id}: Método de envío '{metodo_envio}' no requiere envío pendiente o ya pagado"
-            )
-    else:
-        logging.info(f"Pedido {order_id}: No hay shipping_lines")
 
-    # 3. Calcular 'pendiente_pago'
+    # Checamos si CUALQUIER shipping line contiene 'preventa' en su título
+    has_preventa = any("preventa" in sl.get("title", "").lower() for sl in shipping_lines)
+
+    if has_preventa:
+        # Calculamos el costo de envío solo si se detectó 'preventa'
+        peso_total_kg = float(order.get("total_weight", 0)) / 1000.0
+        estado = shipping_address.get("province", "") or ""
+        envio_pendiente, paqueteria = obtener_tarifa_local(peso_total_kg, estado)
+    else:
+        logging.info(
+            f"Pedido {order_id}: Ningún shipping line contiene 'preventa', "
+            "no se calcula ni guarda costo de envío."
+        )
+
+    # -------------------------------
+    # 3. Calcular 'pendiente_pago' (productos + envío)
+    # -------------------------------
     total_pendiente = cantidad_pendiente_productos + envio_pendiente
 
+    # -------------------------------
     # 4. Guardar los metafields
+    # -------------------------------
     try:
+        # Metafield de productos
         guardar_metafield_pedido_money(order_id, "cantidad_pendiente_productos", cantidad_pendiente_productos)
+
+        # Metafield de envío (será 0 si no hay preventa)
         guardar_metafield_pedido_money(order_id, "envio_pendiente", envio_pendiente)
+
+        # Metafield total
         guardar_metafield_pedido_money(order_id, "pendiente_pago", total_pendiente)
-        
-        # Ajusta "key" a "paqueteria_" (o lo que hayas configurado)
+
+        # Paquetería (texto). Si no detectó 'preventa', quedará vacío
         guardar_metafield_pedido_text(order_id, "paqueteria_", paqueteria)
 
         logging.info(
@@ -291,7 +306,7 @@ def webhook_order_created():
     }), 200
 
 ###############################################################################
-# 3. ENDPOINT MANUAL
+# 3. ENDPOINT MANUAL (similar lógica)
 ###############################################################################
 
 @app.route("/actualizar_pedido/<int:order_id>", methods=["GET"])
@@ -306,6 +321,9 @@ def actualizar_pedido_manual(order_id):
     shipping_lines = order.get("shipping_lines", [])
     shipping_address = order.get("shipping_address", {})
 
+    # -------------------------------
+    # Calcular 'cantidad_pendiente_productos'
+    # -------------------------------
     cantidad_pendiente_productos = 0.0
     for item in line_items:
         product_id = item["product_id"]
@@ -323,23 +341,32 @@ def actualizar_pedido_manual(order_id):
             constante = obtener_constante_producto(product_id)
             cantidad_pendiente_productos += (constante * quantity)
 
+    # -------------------------------
+    # Determinar si se incluye 'preventa'
+    # -------------------------------
+    has_preventa = any("preventa" in sl.get("title", "").lower() for sl in shipping_lines)
+
     envio_pendiente = 0.0
     paqueteria = ""
-    if shipping_lines:
-        metodo_envio = shipping_lines[0].get("title", "")
-        if metodo_envio == "Preventa":
-            peso_total_kg = float(order.get("total_weight", 0)) / 1000.0
-            estado = shipping_address.get("province", "") or ""
-            envio_pendiente, paqueteria = obtener_tarifa_local(peso_total_kg, estado)
+    if has_preventa:
+        peso_total_kg = float(order.get("total_weight", 0)) / 1000.0
+        estado = shipping_address.get("province", "") or ""
+        envio_pendiente, paqueteria = obtener_tarifa_local(peso_total_kg, estado)
+    else:
+        logging.info(
+            f"Pedido {order_id}: No se detectó 'preventa' en ningún shipping line. "
+            "Costo de envío = 0."
+        )
 
     total_pendiente = cantidad_pendiente_productos + envio_pendiente
 
+    # -------------------------------
+    # Guardar los metafields
+    # -------------------------------
     try:
         guardar_metafield_pedido_money(order_id, "cantidad_pendiente_productos", cantidad_pendiente_productos)
         guardar_metafield_pedido_money(order_id, "envio_pendiente", envio_pendiente)
         guardar_metafield_pedido_money(order_id, "pendiente_pago", total_pendiente)
-        
-        # Igual aquí, usa "key" = "paqueteria_"
         guardar_metafield_pedido_text(order_id, "paqueteria_", paqueteria)
 
         logging.info(
@@ -364,4 +391,3 @@ def actualizar_pedido_manual(order_id):
 ###############################################################################
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)), debug=True)
-
