@@ -117,13 +117,17 @@ def obtener_tarifa_local(
     logging.info(f"Para peso {peso_kg}kg y estado '{estado}' no se encontró tarifa por peso.")
     return 0.0, ""
 
-def guardar_metafield_pedido_money(order_id, key, value):
+# ---------------------------------------------------------------------------
+# Función de guardado que funcionó previamente para 'cantidad_pendiente_productos'
+# ---------------------------------------------------------------------------
+def guardar_metafield_pedido(order_id, key, value):
     """
     Crea o actualiza un metafield de tipo money en el pedido.
-      namespace="custom"
-      key -> p.ej. "cantidad_pendiente_productos"
-
-    Valor se envía como JSON: {"amount": "X.YY", "currency_code": "MXN"}
+    Se espera que la definición en Shopify tenga:
+      - namespace: custom
+      - key: EXACTAMENTE lo que se pasa (por ejemplo, "cantidad_pendiente_productos")
+      - type: money
+    Enviamos el valor como JSON: {"amount": "X.YY", "currency_code": "MXN"}
     """
     currency_code = "MXN"
     valor_str = f"{Decimal(value):.2f}"
@@ -144,7 +148,6 @@ def guardar_metafield_pedido_money(order_id, key, value):
     }
     resp = requests.post(url, headers=headers, json=payload)
     if resp.status_code == 422 and "already exists" in resp.text:
-        # Actualizar si ya existe
         existing_mf_url = f"{url}?namespace=custom&key={key}"
         existing_mf_resp = requests.get(existing_mf_url, headers=headers)
         existing_metafields = existing_mf_resp.json().get("metafields", [])
@@ -156,26 +159,50 @@ def guardar_metafield_pedido_money(order_id, key, value):
             logging.info(f"Pedido {order_id}: Metafield '{key}' actualizado a {value_json_str}")
             return
     else:
-        # Si no es 422 o no coincide con "already exists", forzamos el raise_for_status()
+        resp.raise_for_status()
+    logging.info(f"Pedido {order_id}: Metafield '{key}' configurado a {value_json_str}")
+
+# ---------------------------------------------------------------------------
+# Función para guardar metafields de tipo money (para los otros campos)
+# ---------------------------------------------------------------------------
+def guardar_metafield_pedido_money(order_id, key, value):
+    currency_code = "MXN"
+    valor_str = f"{Decimal(value):.2f}"
+    value_json_str = json.dumps({"amount": valor_str, "currency_code": currency_code})
+
+    url = f"https://{SHOPIFY_URL}/admin/api/2023-10/orders/{order_id}/metafields.json"
+    headers = {
+        "X-Shopify-Access-Token": SHOPIFY_API_TOKEN,
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "metafield": {
+            "namespace": "custom",
+            "key": key,
+            "value": value_json_str,
+            "type": "money"
+        }
+    }
+    resp = requests.post(url, headers=headers, json=payload)
+    if resp.status_code == 422 and "already exists" in resp.text:
+        existing_mf_url = f"{url}?namespace=custom&key={key}"
+        existing_mf_resp = requests.get(existing_mf_url, headers=headers)
+        existing_metafields = existing_mf_resp.json().get("metafields", [])
+        if existing_metafields:
+            metafield_id = existing_metafields[0]["id"]
+            update_url = f"https://{SHOPIFY_URL}/admin/api/2023-10/metafields/{metafield_id}.json"
+            upd_resp = requests.put(update_url, headers=headers, json=payload)
+            upd_resp.raise_for_status()
+            logging.info(f"Pedido {order_id}: Metafield '{key}' actualizado a {value_json_str}")
+            return
+    else:
         resp.raise_for_status()
     logging.info(f"Pedido {order_id}: Metafield '{key}' configurado a {value_json_str}")
 
 def guardar_metafield_pedido_text(order_id, key, value):
     """
     Crea o actualiza un metafield de tipo texto (single_line_text_field) en el pedido.
-      namespace="custom"
-      key -> p.ej. "paqueteria_"
-
-    NOTA: Si tu definición de metafield en el Admin no permite cadenas vacías,
-          puedes evitar guardarlo si 'value' está vacío.
     """
-    # ----------------------------------------------
-    # EJEMPLO: SALTARSE GUARDADO SI ES EMPTY
-    # ----------------------------------------------
-    # if not value.strip():
-    #     logging.info(f"Pedido {order_id}: Valor 'paqueteria_' está vacío, se omite guardado")
-    #     return
-
     url = f"https://{SHOPIFY_URL}/admin/api/2023-10/orders/{order_id}/metafields.json"
     headers = {
         "X-Shopify-Access-Token": SHOPIFY_API_TOKEN,
@@ -192,7 +219,6 @@ def guardar_metafield_pedido_text(order_id, key, value):
 
     resp = requests.post(url, headers=headers, json=payload)
     if resp.status_code == 422 and "already exists" in resp.text:
-        # Si el metafield ya existe, lo actualizamos
         existing_mf_url = f"{url}?namespace=custom&key={key}"
         existing_mf_resp = requests.get(existing_mf_url, headers=headers)
         existing_metafields = existing_mf_resp.json().get("metafields", [])
@@ -266,7 +292,8 @@ def webhook_order_created():
 
     # 4. Guardar los metafields
     try:
-        guardar_metafield_pedido_money(order_id, "cantidad_pendiente_productos", cantidad_pendiente_productos)
+        # Aquí usamos la función que funcionó para "cantidad_pendiente_productos"
+        guardar_metafield_pedido(order_id, "cantidad_pendiente_productos", cantidad_pendiente_productos)
         guardar_metafield_pedido_money(order_id, "envio_pendiente", envio_pendiente)
         guardar_metafield_pedido_money(order_id, "pendiente_pago", total_pendiente)
         guardar_metafield_pedido_text(order_id, "paqueteria_", paqueteria)
@@ -276,7 +303,6 @@ def webhook_order_created():
         )
 
     except requests.exceptions.HTTPError as http_err:
-        # Leer detalle de error
         logging.error(
             f"Pedido {order_id}: Error al guardar metafields (HTTPError) - {http_err} "
             f"Response Body: {http_err.response.text}"
@@ -346,7 +372,7 @@ def actualizar_pedido_manual(order_id):
     total_pendiente = cantidad_pendiente_productos + envio_pendiente
 
     try:
-        guardar_metafield_pedido_money(order_id, "cantidad_pendiente_productos", cantidad_pendiente_productos)
+        guardar_metafield_pedido(order_id, "cantidad_pendiente_productos", cantidad_pendiente_productos)
         guardar_metafield_pedido_money(order_id, "envio_pendiente", envio_pendiente)
         guardar_metafield_pedido_money(order_id, "pendiente_pago", total_pendiente)
         guardar_metafield_pedido_text(order_id, "paqueteria_", paqueteria)
