@@ -29,9 +29,7 @@ def normalizar_cadena(texto):
     """
     if not texto:
         return ""
-    # Pasa a minúsculas
     texto = texto.strip().lower()
-    # Elimina acentos / tildes
     texto = ''.join(
         c for c in unicodedata.normalize('NFD', texto)
         if unicodedata.category(c) != 'Mn'
@@ -70,9 +68,11 @@ def obtener_constante_producto(product_id):
     if metafields:
         valor_raw = metafields[0]["value"]
         try:
-            valor_json = json.loads(valor_raw)  # {"amount":"500.00","currency_code":"MXN"}
+            # Por si la value se guardó como JSON {"amount":"500.00","currency_code":"MXN"}
+            valor_json = json.loads(valor_raw)  
             valor = float(valor_json.get("amount", 0))
         except Exception:
+            # Si no es JSON, tomamos el valor tal cual
             valor = float(valor_raw)
         logging.info(f"Producto {product_id}: Obtenido 'constante' = {valor}")
         return valor
@@ -83,32 +83,26 @@ def obtener_constante_producto(product_id):
 def obtener_tarifa_local(
     peso_kg,
     estado,
-    archivo_csv = "envios_pendientes - Hoja 1.csv"
+    archivo_csv="envios_pendientes - Hoja 1.csv"
 ):
     """
     Retorna (tarifa, paqueteria) según un archivo CSV local.
     - 'tarifa' (float)
     - 'paqueteria' (str)
 
-    1) Normaliza el nombre de 'ubicacion' del CSV y el 'estado' ingresado,
-       para ignorar mayúsculas, acentos, etc.
-    2) Hace primero un filtro parcial (por ejemplo, 'guerrero' va a coincidir con 'Estado de Guerrero').
+    1) Normaliza el nombre de 'ubicacion' del CSV y el 'estado' ingresado.
+    2) Hace un filtro parcial (p.ej. 'guerrero' -> 'Estado de Guerrero').
     3) Luego toma la fila con peso_kg >= peso_kg y retorna la primera tarifa.
     """
     df = pd.read_csv(archivo_csv)
-
-    # Creamos una columna normalizada en el DataFrame
     df["ubicacion_normalizada"] = df["ubicacion"].apply(normalizar_cadena)
     estado_normalizado = normalizar_cadena(estado)
 
-    # Filtramos las filas donde 'ubicacion_normalizada' contenga el texto del estado_normalizado
     df_match = df[df["ubicacion_normalizada"].str.contains(estado_normalizado, na=False)]
-
     if df_match.empty:
-        logging.info(f"Para peso {peso_kg}kg y estado '{estado}', no se encontró tarifa aplicable (sin coincidencia).")
+        logging.info(f"Para peso {peso_kg}kg y estado '{estado}', no se encontró tarifa aplicable.")
         return 0.0, ""
 
-    # Ahora filtramos por peso
     df_aplicable = df_match[df_match["peso_kg"] >= peso_kg].sort_values("peso_kg")
     if not df_aplicable.empty:
         row = df_aplicable.iloc[0]
@@ -120,7 +114,6 @@ def obtener_tarifa_local(
         )
         return tarifa, paqueteria
 
-    # Si no se encontró una tarifa aplicable por peso
     logging.info(f"Para peso {peso_kg}kg y estado '{estado}' no se encontró tarifa por peso.")
     return 0.0, ""
 
@@ -133,7 +126,6 @@ def guardar_metafield_pedido_money(order_id, key, value):
     Valor se envía como JSON: {"amount": "X.YY", "currency_code": "MXN"}
     """
     currency_code = "MXN"
-    from decimal import Decimal
     valor_str = f"{Decimal(value):.2f}"
     value_json_str = json.dumps({"amount": valor_str, "currency_code": currency_code})
 
@@ -151,8 +143,8 @@ def guardar_metafield_pedido_money(order_id, key, value):
         }
     }
     resp = requests.post(url, headers=headers, json=payload)
-    # Si el metafield ya existe, lo actualizamos
     if resp.status_code == 422 and "already exists" in resp.text:
+        # Actualizar si ya existe
         existing_mf_url = f"{url}?namespace=custom&key={key}"
         existing_mf_resp = requests.get(existing_mf_url, headers=headers)
         existing_metafields = existing_mf_resp.json().get("metafields", [])
@@ -164,6 +156,7 @@ def guardar_metafield_pedido_money(order_id, key, value):
             logging.info(f"Pedido {order_id}: Metafield '{key}' actualizado a {value_json_str}")
             return
     else:
+        # Si no es 422 o no coincide con "already exists", forzamos el raise_for_status()
         resp.raise_for_status()
     logging.info(f"Pedido {order_id}: Metafield '{key}' configurado a {value_json_str}")
 
@@ -172,7 +165,17 @@ def guardar_metafield_pedido_text(order_id, key, value):
     Crea o actualiza un metafield de tipo texto (single_line_text_field) en el pedido.
       namespace="custom"
       key -> p.ej. "paqueteria_"
+
+    NOTA: Si tu definición de metafield en el Admin no permite cadenas vacías,
+          puedes evitar guardarlo si 'value' está vacío.
     """
+    # ----------------------------------------------
+    # EJEMPLO: SALTARSE GUARDADO SI ES EMPTY
+    # ----------------------------------------------
+    # if not value.strip():
+    #     logging.info(f"Pedido {order_id}: Valor 'paqueteria_' está vacío, se omite guardado")
+    #     return
+
     url = f"https://{SHOPIFY_URL}/admin/api/2023-10/orders/{order_id}/metafields.json"
     headers = {
         "X-Shopify-Access-Token": SHOPIFY_API_TOKEN,
@@ -181,14 +184,15 @@ def guardar_metafield_pedido_text(order_id, key, value):
     payload = {
         "metafield": {
             "namespace": "custom",
-            "key": key,  # <= Usa la misma key definida en Shopify
+            "key": key,
             "value": str(value),
             "type": "single_line_text_field"
         }
     }
+
     resp = requests.post(url, headers=headers, json=payload)
-    # Si el metafield ya existe, lo actualizamos
     if resp.status_code == 422 and "already exists" in resp.text:
+        # Si el metafield ya existe, lo actualizamos
         existing_mf_url = f"{url}?namespace=custom&key={key}"
         existing_mf_resp = requests.get(existing_mf_url, headers=headers)
         existing_metafields = existing_mf_resp.json().get("metafields", [])
@@ -220,14 +224,11 @@ def webhook_order_created():
     shipping_lines = order.get("shipping_lines", [])
     shipping_address = order.get("shipping_address", {})
 
-    # -------------------------------
     # 1. Calcular 'cantidad_pendiente_productos'
-    # -------------------------------
     cantidad_pendiente_productos = 0.0
     for item in line_items:
         product_id = item["product_id"]
         quantity = item["quantity"]
-        # Verificar si el producto tiene etiqueta 'yo'
         prod_url = f"https://{SHOPIFY_URL}/admin/api/2023-10/products/{product_id}.json?fields=tags"
         headers = {
             "X-Shopify-Access-Token": SHOPIFY_API_TOKEN,
@@ -245,18 +246,12 @@ def webhook_order_created():
                 f"Pedido {order_id}: Producto {product_id} (qty {quantity}) suma {subtotal} a cantidad pendiente"
             )
 
-    # -------------------------------
     # 2. Determinar si incluye "preventa"
-    #    y calcular "envio_pendiente" y "paqueteria"
-    # -------------------------------
     envio_pendiente = 0.0
     paqueteria = ""
-
-    # Checamos si CUALQUIER shipping line contiene 'preventa' en su título
     has_preventa = any("preventa" in sl.get("title", "").lower() for sl in shipping_lines)
 
     if has_preventa:
-        # Calculamos el costo de envío solo si se detectó 'preventa'
         peso_total_kg = float(order.get("total_weight", 0)) / 1000.0
         estado = shipping_address.get("province", "") or ""
         envio_pendiente, paqueteria = obtener_tarifa_local(peso_total_kg, estado)
@@ -266,35 +261,30 @@ def webhook_order_created():
             "no se calcula ni guarda costo de envío."
         )
 
-    # -------------------------------
     # 3. Calcular 'pendiente_pago' (productos + envío)
-    # -------------------------------
     total_pendiente = cantidad_pendiente_productos + envio_pendiente
 
-    # -------------------------------
     # 4. Guardar los metafields
-    # -------------------------------
     try:
-        # Metafield de productos
         guardar_metafield_pedido_money(order_id, "cantidad_pendiente_productos", cantidad_pendiente_productos)
-
-        # Metafield de envío (será 0 si no hay preventa)
         guardar_metafield_pedido_money(order_id, "envio_pendiente", envio_pendiente)
-
-        # Metafield total
         guardar_metafield_pedido_money(order_id, "pendiente_pago", total_pendiente)
-
-        # Paquetería (texto). Si no detectó 'preventa', quedará vacío
         guardar_metafield_pedido_text(order_id, "paqueteria_", paqueteria)
-
         logging.info(
             f"Pedido {order_id}: Metafields guardados. Productos={cantidad_pendiente_productos}, "
             f"Envío={envio_pendiente}, Total={total_pendiente}, Paqueteria='{paqueteria}'"
         )
 
+    except requests.exceptions.HTTPError as http_err:
+        # Leer detalle de error
+        logging.error(
+            f"Pedido {order_id}: Error al guardar metafields (HTTPError) - {http_err} "
+            f"Response Body: {http_err.response.text}"
+        )
+        return jsonify({"error": str(http_err), "response_body": http_err.response.text}), 500
     except Exception as e:
         logging.error(f"Pedido {order_id}: Error al guardar metafields - {e}")
-        return jsonify({"error": "Error al guardar metafields"}), 500
+        return jsonify({"error": str(e)}), 500
 
     return jsonify({
         "status": "Metafields actualizados",
@@ -321,9 +311,6 @@ def actualizar_pedido_manual(order_id):
     shipping_lines = order.get("shipping_lines", [])
     shipping_address = order.get("shipping_address", {})
 
-    # -------------------------------
-    # Calcular 'cantidad_pendiente_productos'
-    # -------------------------------
     cantidad_pendiente_productos = 0.0
     for item in line_items:
         product_id = item["product_id"]
@@ -341,9 +328,7 @@ def actualizar_pedido_manual(order_id):
             constante = obtener_constante_producto(product_id)
             cantidad_pendiente_productos += (constante * quantity)
 
-    # -------------------------------
     # Determinar si se incluye 'preventa'
-    # -------------------------------
     has_preventa = any("preventa" in sl.get("title", "").lower() for sl in shipping_lines)
 
     envio_pendiente = 0.0
@@ -360,9 +345,6 @@ def actualizar_pedido_manual(order_id):
 
     total_pendiente = cantidad_pendiente_productos + envio_pendiente
 
-    # -------------------------------
-    # Guardar los metafields
-    # -------------------------------
     try:
         guardar_metafield_pedido_money(order_id, "cantidad_pendiente_productos", cantidad_pendiente_productos)
         guardar_metafield_pedido_money(order_id, "envio_pendiente", envio_pendiente)
@@ -373,9 +355,15 @@ def actualizar_pedido_manual(order_id):
             f"Pedido {order_id}: Metafields (manual) configurados. Productos={cantidad_pendiente_productos}, "
             f"Envío={envio_pendiente}, Total={total_pendiente}, Paqueteria='{paqueteria}'"
         )
+    except requests.exceptions.HTTPError as http_err:
+        logging.error(
+            f"Pedido {order_id}: Error HTTP al guardar metafields - {http_err} "
+            f"Response Body: {http_err.response.text}"
+        )
+        return jsonify({"error": str(http_err), "response_body": http_err.response.text}), 500
     except Exception as e:
         logging.error(f"Pedido {order_id}: Error al guardar metafields manualmente - {e}")
-        return jsonify({"error": "Error al guardar metafields"}), 500
+        return jsonify({"error": str(e)}), 500
 
     return jsonify({
         "status": "Metafields actualizados (manual)",
